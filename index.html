@@ -6,42 +6,42 @@
     <title>H.I.C.</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="code-font">
 
 <div class="container" id="app">
     <h1>H.I.C.</h1>
     
-    <div id="main-menu">
+    <div id="main-menu" class="centered">
         <button onclick="showPage('workout-list')">Начать тренировку</button>
         <button onclick="showPage('stats')">Статистика</button>
     </div>
 
     <div id="workout-list" style="display:none;">
         <button class="back-btn" onclick="showPage('main-menu')">←</button>
-        <h2>Тренировки</h2>
+        <h2 class="centered">Тренировки</h2>
         <div id="workouts-container"></div>
         <button class="plus-btn" onclick="createWorkout()">+</button>
     </div>
 
     <div id="exercise-screen" style="display:none;">
         <button class="back-btn" onclick="showPage('workout-list')">←</button>
-        <h2 id="workout-title"></h2>
+        <h2 id="workout-title" class="centered"></h2>
         <div id="exercises-container"></div>
-        <button onclick="showExerciseForm()">+ Добавить упражнение</button>
+        <button onclick="showExerciseForm()">+ Добавить</button>
     </div>
 
     <div id="exercise-form" style="display:none;">
         <button class="back-btn" onclick="showPage('exercise-screen')">←</button>
-        <h3>Новое упражнение</h3>
-        <input type="text" id="ex-name" placeholder="Название" style="width:100%; padding:10px; margin:10px 0; border:1px solid #000;">
+        <h3 class="centered">Новое упражнение</h3>
+        <input type="text" id="ex-name" placeholder="Название" class="input-field">
         
-        <p>Подходы:</p>
+        <p class="centered">Подходы:</p>
         <div class="option-grid" id="sets-options"></div>
         
-        <p>Отдых (сек):</p>
+        <p class="centered">Отдых (сек):</p>
         <div class="option-grid" id="rest-options"></div>
         
-        <button onclick="saveExercise()">Сохранить упражнение</button>
+        <button onclick="saveExercise()">Сохранить</button>
     </div>
 </div>
 
@@ -55,18 +55,21 @@
         document.getElementById(id).style.display = 'block';
     }
 
-    // Генерация кнопок-вариантов
-    function initOptions() {
-        const sets = [3, 4, 5];
-        const rests = [30, 40, 50, 60, 80, 120];
-        document.getElementById('sets-options').innerHTML = sets.map(s => `<button class="opt-btn" onclick="setVal('sets', ${s})">${s}</button>`).join('');
-        document.getElementById('rest-options').innerHTML = rests.map(r => `<button class="opt-btn" onclick="setVal('rest', ${r})">${r}</button>`).join('');
+    function createWorkout() {
+        const name = prompt("Название тренировки:");
+        if (name) {
+            let workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+            workouts.push({ name: name, exercises: [] });
+            localStorage.setItem('workouts', JSON.stringify(workouts));
+            renderWorkouts();
+        }
     }
 
-    function setVal(type, val) {
-        if(type === 'sets') selectedSets = val;
-        if(type === 'rest') selectedRest = val;
-        // Можно добавить визуальное выделение активной кнопки здесь
+    function initOptions() {
+        const sets = [3, 4, 5];
+        const rests = [30, 40, 60, 80, 120];
+        document.getElementById('sets-options').innerHTML = sets.map(s => `<button class="opt-btn" onclick="selectedSets=${s}">${s}</button>`).join('');
+        document.getElementById('rest-options').innerHTML = rests.map(r => `<button class="opt-btn" onclick="selectedRest=${r}">${r}</button>`).join('');
     }
 
     function saveExercise() {
@@ -78,8 +81,31 @@
         showPage('exercise-screen');
     }
 
-    // ... (остальные функции renderWorkouts и т.д. остаются прежними)
+    function renderWorkouts() {
+        const container = document.getElementById('workouts-container');
+        const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+        container.innerHTML = workouts.map((w, index) => 
+            `<div class="card" onclick="openWorkout(${index})">${w.name}</div>`
+        ).join('');
+    }
+
+    function openWorkout(index) {
+        currentWorkoutIndex = index;
+        document.getElementById('workout-title').innerText = JSON.parse(localStorage.getItem('workouts'))[index].name;
+        renderExercises();
+        showPage('exercise-screen');
+    }
+
+    function renderExercises() {
+        const container = document.getElementById('exercises-container');
+        const workouts = JSON.parse(localStorage.getItem('workouts'));
+        container.innerHTML = workouts[currentWorkoutIndex].exercises.map(ex => 
+            `<div class="card">${ex.name}: ${ex.sets} подх., ${ex.rest}с</div>`
+        ).join('');
+    }
+
     initOptions();
+    renderWorkouts();
 </script>
 </body>
 </html>

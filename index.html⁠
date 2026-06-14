@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HE IS COMING</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="streak-container">
+        <span class="streak-fire">🔥</span>
+        <span id="streak-count" class="streak-number">5</span>
+        <span class="streak-label">ДНЕЙ ПОДРЯД</span>
+    </div>
+
+    <div class="app-title">HE IS COMING</div>
+
+    <div id="main-tree" class="screen">
+        <div class="tree-branch" onclick="openScreen('weekend-screen')">
+            <span class="branch-title">ВЫХОДНЫЕ ДНИ</span>
+            <span class="branch-arrow">→</span>
+        </div>
+        <div class="tree-branch" onclick="openScreen('casual-screen')">
+            <span class="branch-title">КАЗУАЛ (БУДНИ)</span>
+            <span class="branch-arrow">→</span>
+        </div>
+    </div>
+
+    <div id="weekend-screen" class="screen hidden">
+        <div class="back-btn" onclick="openScreen('main-tree')">← Назад</div>
+        <h2>ВЫХОДНЫЕ ДНИ</h2>
+        <div class="workout-card" onclick="openScreen('counter-screen', 'Фуллбоди (Интенсив)')">Фуллбоди Тренировка</div>
+        <div class="workout-card" onclick="openScreen('counter-screen', 'Силовая сессия')">Тяжелая Силовая</div>
+    </div>
+
+    <div id="casual-screen" class="screen hidden">
+        <div class="back-btn" onclick="openScreen('main-tree')">← Назад</div>
+        <h2>КАЗУАЛ (БУДНИ)</h2>
+        <div class="workout-card" onclick="openScreen('counter-screen', 'Быстрые Руки / Пресс')">Быстрая: Руки + Пресс</div>
+        <div class="workout-card" onclick="openScreen('counter-screen', 'Легкий сплит')">Легкий Сплит</div>
+    </div>
+
+    <div id="counter-screen" class="screen hidden">
+        <div class="back-btn" onclick="goBackToBranch()">← Назад</div>
+        <h2 id="current-workout-title">Тренировка</h2>
+        
+        <div class="exercise-block">
+            <div class="exercise-name">Текущее упражнение</div>
+            <p style="color: #666; font-size: 12px; margin-bottom: 15px;">Нажимай на круги, чтобы засчитать подход</p>
+            
+            <div class="sets-grid">
+                <div class="set-circle" onclick="toggleSet(this)">1</div>
+                <div class="set-circle" onclick="toggleSet(this)">2</div>
+                <div class="set-circle" onclick="toggleSet(this)">3</div>
+                <div class="set-circle" onclick="toggleSet(this)">4</div>
+            </div>
+        </div>
+
+        <button class="finish-btn" onclick="finishWorkout()">ЗАВЕРШИТЬ ТРЕНИРОВКУ</button>
+    </div>
+
+    <script>
+        let lastScreen = 'main-tree';
+
+        function openScreen(screenId, title = '') {
+            if (screenId === 'weekend-screen' || screenId === 'casual-screen') {
+                lastScreen = screenId;
+            }
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+            
+            if (title) {
+                document.getElementById('current-workout-title').innerText = title;
+            }
+        }
+
+        function goBackToBranch() {
+            openScreen(lastScreen);
+        }
+
+        function toggleSet(circle) {
+            circle.classList.toggle('active');
+        }
+
+        function finishWorkout() {
+            alert('Тренировка завершена! Твой статус обновляется.');
+            // Тут в будущем сделаем сохранение данных
+            openScreen('main-tree');
+            // Сбрасываем кружки
+            document.querySelectorAll('.set-circle').forEach(c => c.classList.remove('active'));
+        }
+    </script>
+</body>
+</html>

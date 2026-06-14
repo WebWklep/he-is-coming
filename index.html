@@ -13,7 +13,7 @@
     
     <div id="main-menu">
         <button onclick="showPage('workout-list')">Начать тренировку</button>
-        <button onclick="showPage('stats')">Статистика (Stats)</button>
+        <button onclick="showPage('stats')">Статистика</button>
     </div>
 
     <div id="workout-list" style="display:none;">
@@ -22,12 +22,28 @@
         <button class="plus-btn" onclick="createWorkout()">+</button>
         <button onclick="showPage('main-menu')">Назад</button>
     </div>
+
+    <div id="exercise-screen" style="display:none;">
+        <h2 id="workout-title"></h2>
+        <div id="exercises-container"></div>
+        <button onclick="showExerciseForm()">+ Добавить упражнение</button>
+        <button onclick="showPage('workout-list')">Назад</button>
+    </div>
+
+    <div id="exercise-form" style="display:none;">
+        <h3>Новое упражнение</h3>
+        <input type="text" id="ex-name" placeholder="Название (например, Жим)" style="width:100%; padding:10px; margin:5px 0;">
+        <input type="number" id="ex-sets" placeholder="Подходы (1-10)" min="1" max="10" style="width:100%; padding:10px; margin:5px 0;">
+        <input type="number" id="ex-rest" placeholder="Отдых (сек)" style="width:100%; padding:10px; margin:5px 0;">
+        <button onclick="saveExercise()">Save</button>
+    </div>
 </div>
 
 <script>
+    let currentWorkoutIndex = null;
+
     function showPage(id) {
-        document.getElementById('main-menu').style.display = 'none';
-        document.getElementById('workout-list').style.display = 'none';
+        document.querySelectorAll('.container > div:not(#app)').forEach(div => div.style.display = 'none');
         document.getElementById(id).style.display = 'block';
     }
 
@@ -41,13 +57,45 @@
         }
     }
 
+    function openWorkout(index) {
+        currentWorkoutIndex = index;
+        const workouts = JSON.parse(localStorage.getItem('workouts'));
+        document.getElementById('workout-title').innerText = workouts[index].name;
+        renderExercises();
+        showPage('exercise-screen');
+    }
+
+    function showExerciseForm() { showPage('exercise-form'); }
+
+    function saveExercise() {
+        const name = document.getElementById('ex-name').value;
+        const sets = document.getElementById('ex-sets').value;
+        const rest = document.getElementById('ex-rest').value;
+        
+        let workouts = JSON.parse(localStorage.getItem('workouts'));
+        workouts[currentWorkoutIndex].exercises.push({ name, sets, rest });
+        localStorage.setItem('workouts', JSON.stringify(workouts));
+        
+        renderExercises();
+        showPage('exercise-screen');
+    }
+
+    function renderExercises() {
+        const container = document.getElementById('exercises-container');
+        const workouts = JSON.parse(localStorage.getItem('workouts'));
+        container.innerHTML = workouts[currentWorkoutIndex].exercises.map(ex => 
+            `<div class="card">${ex.name} (${ex.sets} подх., отдых ${ex.rest}с)</div>`
+        ).join('');
+    }
+
     function renderWorkouts() {
         const container = document.getElementById('workouts-container');
         const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-        container.innerHTML = workouts.map(w => `<div class="card">${w.name}</div>`).join('');
+        container.innerHTML = workouts.map((w, index) => 
+            `<div class="card" onclick="openWorkout(${index})">${w.name}</div>`
+        ).join('');
     }
 
-    // Инициализация
     renderWorkouts();
 </script>
 </body>

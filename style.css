@@ -1,28 +1,31 @@
-/* Добавь это в конец своего файла style.css */
-.back-btn {
-    position: absolute;
-    left: 20px;
-    top: 20px;
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    font-size: 20px;
-    background: none;
-    color: #000;
-    border: 1px solid #000;
+.code-font { font-family: "Courier New", Courier, monospace; }
+
+.centered { text-align: center; }
+
+body { background: #fff; color: #000; padding: 20px; }
+
+.container { max-width: 400px; margin: auto; }
+
+button { 
+    background: #000; color: #fff; border: none; padding: 15px; 
+    width: 100%; border-radius: 0; font-family: inherit; margin-top: 10px;
 }
 
-.option-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+.card { 
+    border: 1px solid #000; padding: 15px; margin-top: 10px; 
+    text-align: center; font-weight: bold;
 }
 
-.opt-btn {
-    padding: 10px;
-    margin: 0;
-    border: 1px solid #000;
-    background: #fff;
-    color: #000;
+.back-btn { 
+    position: absolute; left: 10px; top: 10px; width: 50px; 
+    background: #fff; color: #000; border: 1px solid #000;
 }
+
+.input-field { 
+    width: 100%; padding: 10px; border: 1px solid #000; 
+    box-sizing: border-box; font-family: inherit; text-align: center;
+}
+
+.option-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+
+.opt-btn { background: #fff; color: #000; border: 1px solid #000; padding: 10px; }
